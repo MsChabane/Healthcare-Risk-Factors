@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler,LabelEncoder,MinMaxScaler
 import joblib
 
 
-def preprocess_data(df: pd.DataFrame,skip_normalization: bool, use_minmax_scaler: bool,split_params:dict) -> pd.DataFrame:
+def preprocess_data(df: pd.DataFrame,params:dict) -> pd.DataFrame:
     """
     Preprocess the input DataFrame by encoding categorical variables, scaling numerical features,
     and splitting the data into training, testing, and validation sets.
@@ -28,10 +28,10 @@ def preprocess_data(df: pd.DataFrame,skip_normalization: bool, use_minmax_scaler
     encoder = LabelEncoder()
     y = encoder.fit_transform(y)
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=split_params["test_size"], random_state=split_params["random_state"], stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=params["test_size"], random_state=params["random_state"], stratify=y)
     X_test,X_val,y_test,y_val = train_test_split(X_test, y_test, test_size=0.5, random_state=42,stratify=y_test)
-    if not skip_normalization:
-        scaler = MinMaxScaler() if use_minmax_scaler else StandardScaler()
+    if not params["normalization"]:
+        scaler = MinMaxScaler() if params['scaling']=='minmax' else StandardScaler()
         X_train[numerical_features_names] = scaler.fit_transform(X_train[numerical_features_names])
         X_test[numerical_features_names] = scaler.transform(X_test[numerical_features_names])
         X_val[numerical_features_names] = scaler.transform(X_val[numerical_features_names])
@@ -53,6 +53,5 @@ if __name__ == "__main__":
     df = pd.read_csv(CLEANED_DATA_PATH)
     config = read_params()
     params = config["preprocessing"]
-    split_params = params["split"]
-    preprocess_data(df,skip_normalization=not params["normalization"], use_minmax_scaler=params["scaling"]=="minmax",split_params=split_params)
+    preprocess_data(df,params=params)
     print("Preprocessing completed. Processed data saved to disk.")

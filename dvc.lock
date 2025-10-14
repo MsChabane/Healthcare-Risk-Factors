@@ -10,8 +10,8 @@ stages:
       nfiles: 2
     - path: src/constant/__init__.py
       hash: md5
-      md5: 2c6d0e192573a31bfff3778516df4698
-      size: 1040
+      md5: afaad55ea3a5a31f6875ffe94dd2503d
+      size: 1253
     - path: src/pipeline/data/clean.py
       hash: md5
       md5: cd18ee5907e78c9b4b9bc31a423bcae8
@@ -30,33 +30,32 @@ stages:
       size: 1233955
     - path: src/constant/__init__.py
       hash: md5
-      md5: 2c6d0e192573a31bfff3778516df4698
-      size: 1040
+      md5: afaad55ea3a5a31f6875ffe94dd2503d
+      size: 1253
     - path: src/pipeline/features/preprocess.py
       hash: md5
-      md5: 5a019df85ba3dad62769cfbf249cdd66
-      size: 2655
+      md5: 27b43fa2f730e1173f8cd3bff093c18e
+      size: 2461
     params:
       params.yaml:
         preprocessing:
-          normalization: true
-          scaling: minmax
-          split:
-            test_size: 0.2
-            random_state: 42
+          normalization: false
+          scaling: standard
+          test_size: 0.2
+          random_state: 42
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: f32814505962ee18f5123133ae207266
-      size: 323531
+      md5: 181a87afee855f7e9dfeb98a60b08ec9
+      size: 331333
     - path: data/processed/train.csv
       hash: md5
-      md5: 2c8ad2910a7cff41c7c7ac27290a8e08
-      size: 2588158
+      md5: 4e675f972242d9d0b69283fa58623e9e
+      size: 2649334
     - path: data/processed/val.csv
       hash: md5
-      md5: 93e81ab44f6586531e63c37d830cb4d3
-      size: 323772
+      md5: 382e0e0b3fbb095206be098f004a3c1a
+      size: 331586
     - path: models/gender_map.pkl
       hash: md5
       md5: c6aa9cc62ffc628ee8deabaa9d523c24
@@ -70,16 +69,16 @@ stages:
     deps:
     - path: data/processed/train.csv
       hash: md5
-      md5: 2c8ad2910a7cff41c7c7ac27290a8e08
-      size: 2588158
+      md5: 4e675f972242d9d0b69283fa58623e9e
+      size: 2649334
     - path: data/processed/val.csv
       hash: md5
-      md5: 93e81ab44f6586531e63c37d830cb4d3
-      size: 323772
+      md5: 382e0e0b3fbb095206be098f004a3c1a
+      size: 331586
     - path: src/constant/__init__.py
       hash: md5
-      md5: 2c6d0e192573a31bfff3778516df4698
-      size: 1040
+      md5: afaad55ea3a5a31f6875ffe94dd2503d
+      size: 1253
     - path: src/pipeline/model/train.py
       hash: md5
       md5: 2ffe07dee574d67905a9178072e621ee
@@ -88,44 +87,45 @@ stages:
       params.yaml:
         model:
           params:
+            objective: multi:softprob
             n_estimators: 1000
-            max_depth: 6
-            learning_rate: 0.1
+            max_depth: 8
+            learning_rate: 0.005
             subsample: 0.8
             colsample_bytree: 0.8
             random_state: 42
             use_label_encoder: false
-            eval_metric: mlogloss
+            eval_metric: auc
             early_stopping_rounds: 10
             class_weight: balanced
     outs:
     - path: models/classifier.pkl
       hash: md5
-      md5: babb2136585501e955a6fc2d73270075
-      size: 2414878
+      md5: 5f0af0580a762d16d8cc6960bac2c522
+      size: 1526420
   evaluate_model:
     cmd: python -m src.pipeline.model.eval
     deps:
     - path: data/processed/test.csv
       hash: md5
-      md5: f32814505962ee18f5123133ae207266
-      size: 323531
+      md5: 181a87afee855f7e9dfeb98a60b08ec9
+      size: 331333
     - path: models/classifier.pkl
       hash: md5
-      md5: babb2136585501e955a6fc2d73270075
-      size: 2414878
+      md5: 5f0af0580a762d16d8cc6960bac2c522
+      size: 1526420
     - path: models/target_encoder.pkl
       hash: md5
       md5: 50a61c3b81ac8f22c2b1ef698965069b
       size: 549
     - path: src/constant/__init__.py
       hash: md5
-      md5: 2c6d0e192573a31bfff3778516df4698
-      size: 1040
+      md5: afaad55ea3a5a31f6875ffe94dd2503d
+      size: 1253
     - path: src/pipeline/model/eval.py
       hash: md5
-      md5: 0edd9b073b040277d05bec5a6ce6535c
-      size: 2546
+      md5: 5f62b01f89fcf41a9cbbe9c17737feb5
+      size: 3817
     params:
       params.yaml:
         eval:
@@ -133,6 +133,6 @@ stages:
     outs:
     - path: reports/
       hash: md5
-      md5: bed5354166d19af02d3af4cd4ac65a0c.dir
-      size: 80644
+      md5: 6bbc993f249296a30c8d9fa28bc9c217.dir
+      size: 83514
       nfiles: 5

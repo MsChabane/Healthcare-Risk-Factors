@@ -1,12 +1,13 @@
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent.parent.parent
+
 DATA_DIR = ROOT_DIR / "data"
 CLEANED_DATA_DIR = DATA_DIR / "cleaned"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 REPORTS_DIR = ROOT_DIR / "reports"
 MODELS_DIR = ROOT_DIR / "models"
-PARAMS_PATH = ROOT_DIR / "params.yaml"
+MLFLOW_DIR = ROOT_DIR / "mlruns"
 
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -14,7 +15,9 @@ CLEANED_DATA_DIR.mkdir(parents=True, exist_ok=True)
 PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
+MLFLOW_DIR.mkdir(parents=True, exist_ok=True)
 
+PARAMS_PATH = ROOT_DIR / "params.yaml"
 RAW_DATA_PATH= DATA_DIR / "raw"/"dirty_v3_path.csv"
 CLEANED_DATA_PATH = CLEANED_DATA_DIR / "cleaned.csv"
 TRAIN_DATA_PATH = PROCESSED_DATA_DIR / "train.csv"
@@ -26,7 +29,11 @@ NORMALIZER_PATH = MODELS_DIR / "normaliser.pkl"
 TARGET_ENCODER_PATH = MODELS_DIR / "target_encoder.pkl"
 GENDER_MAP_PATH = MODELS_DIR / "gender_map.pkl"
 CLASSIFIER_PATH = MODELS_DIR / "classifier.pkl" 
+MLFLOW_TRACKING_URI = MLFLOW_DIR.as_uri()
 
+
+print(f"Root directory: {ROOT_DIR}")
+print(f"MLflow tracking URI: {MLFLOW_TRACKING_URI}")
 
 
 

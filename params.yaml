@@ -1,20 +1,20 @@
   
 preprocessing:
-  normalization: True
-  scaling: minmax
-  split:
-    test_size: 0.2
-    random_state: 42
+  normalization: False
+  scaling: "standard" # options: "minmax", "standard"
+  test_size: 0.2
+  random_state: 42
 model:
   params: {
+    "objective": "multi:softprob",
     "n_estimators": 1000,
-    "max_depth": 6,
-    "learning_rate": 0.1,
+    "max_depth": 8,
+    "learning_rate": 0.005,
     "subsample": 0.8,
     "colsample_bytree": 0.8,
     "random_state": 42,
     "use_label_encoder": false,
-    "eval_metric": "mlogloss",
+    "eval_metric": "auc",
     "early_stopping_rounds": 10,
     "class_weight": "balanced"
   }
