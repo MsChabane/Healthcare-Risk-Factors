@@ -6,3 +6,6 @@ __pychache__/
 *.pyo
 *.pyd
 mlruns/
+__pycache__
+/models
+/reports

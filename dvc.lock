@@ -1,0 +1,138 @@
+schema: '2.0'
+stages:
+  clean_data:
+    cmd: python -m src.pipeline.data.clean
+    deps:
+    - path: data/raw/
+      hash: md5
+      md5: 49d5a382a86cada1480cf097d22f3288.dir
+      size: 3379281
+      nfiles: 2
+    - path: src/constant/__init__.py
+      hash: md5
+      md5: 2c6d0e192573a31bfff3778516df4698
+      size: 1040
+    - path: src/pipeline/data/clean.py
+      hash: md5
+      md5: cd18ee5907e78c9b4b9bc31a423bcae8
+      size: 360
+    outs:
+    - path: data/cleaned/cleaned.csv
+      hash: md5
+      md5: 580f70765276119bb41c3931b5bf69e6
+      size: 1233955
+  preprocess:
+    cmd: python -m src.pipeline.features.preprocess
+    deps:
+    - path: data/cleaned/cleaned.csv
+      hash: md5
+      md5: 580f70765276119bb41c3931b5bf69e6
+      size: 1233955
+    - path: src/constant/__init__.py
+      hash: md5
+      md5: 2c6d0e192573a31bfff3778516df4698
+      size: 1040
+    - path: src/pipeline/features/preprocess.py
+      hash: md5
+      md5: 5a019df85ba3dad62769cfbf249cdd66
+      size: 2655
+    params:
+      params.yaml:
+        preprocessing:
+          normalization: true
+          scaling: minmax
+          split:
+            test_size: 0.2
+            random_state: 42
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: f32814505962ee18f5123133ae207266
+      size: 323531
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 2c8ad2910a7cff41c7c7ac27290a8e08
+      size: 2588158
+    - path: data/processed/val.csv
+      hash: md5
+      md5: 93e81ab44f6586531e63c37d830cb4d3
+      size: 323772
+    - path: models/gender_map.pkl
+      hash: md5
+      md5: c6aa9cc62ffc628ee8deabaa9d523c24
+      size: 36
+    - path: models/target_encoder.pkl
+      hash: md5
+      md5: 50a61c3b81ac8f22c2b1ef698965069b
+      size: 549
+  train_model:
+    cmd: python -m src.pipeline.model.train
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 2c8ad2910a7cff41c7c7ac27290a8e08
+      size: 2588158
+    - path: data/processed/val.csv
+      hash: md5
+      md5: 93e81ab44f6586531e63c37d830cb4d3
+      size: 323772
+    - path: src/constant/__init__.py
+      hash: md5
+      md5: 2c6d0e192573a31bfff3778516df4698
+      size: 1040
+    - path: src/pipeline/model/train.py
+      hash: md5
+      md5: 2ffe07dee574d67905a9178072e621ee
+      size: 1447
+    params:
+      params.yaml:
+        model:
+          params:
+            n_estimators: 1000
+            max_depth: 6
+            learning_rate: 0.1
+            subsample: 0.8
+            colsample_bytree: 0.8
+            random_state: 42
+            use_label_encoder: false
+            eval_metric: mlogloss
+            early_stopping_rounds: 10
+            class_weight: balanced
+    outs:
+    - path: models/classifier.pkl
+      hash: md5
+      md5: babb2136585501e955a6fc2d73270075
+      size: 2414878
+  evaluate_model:
+    cmd: python -m src.pipeline.model.eval
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: f32814505962ee18f5123133ae207266
+      size: 323531
+    - path: models/classifier.pkl
+      hash: md5
+      md5: babb2136585501e955a6fc2d73270075
+      size: 2414878
+    - path: models/target_encoder.pkl
+      hash: md5
+      md5: 50a61c3b81ac8f22c2b1ef698965069b
+      size: 549
+    - path: src/constant/__init__.py
+      hash: md5
+      md5: 2c6d0e192573a31bfff3778516df4698
+      size: 1040
+    - path: src/pipeline/model/eval.py
+      hash: md5
+      md5: 0edd9b073b040277d05bec5a6ce6535c
+      size: 2546
+    params:
+      params.yaml:
+        eval:
+          mlflow_experiment_name: XGBClassifier_Experiment
+    outs:
+    - path: reports/
+      hash: md5
+      md5: bed5354166d19af02d3af4cd4ac65a0c.dir
+      size: 80644
+      nfiles: 5

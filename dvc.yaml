@@ -1,0 +1,50 @@
+stages:
+  clean_data:
+    cmd: python -m src.pipeline.data.clean
+    deps:
+      - src/pipeline/data/clean.py
+      - src/constant/__init__.py
+      - data/raw/
+    outs:
+      - data/cleaned/cleaned.csv
+
+
+  preprocess:
+    cmd: python -m src.pipeline.features.preprocess
+    deps:
+      - src/pipeline/features/preprocess.py
+      - src/constant/__init__.py
+      - data/cleaned/cleaned.csv
+    params:
+      - preprocessing
+    outs:
+      - data/processed/test.csv
+      - data/processed/train.csv
+      - data/processed/val.csv
+      - models/target_encoder.pkl
+      - models/gender_map.pkl
+    
+  train_model:
+    cmd: python -m src.pipeline.model.train
+    deps:
+      - src/pipeline/model/train.py
+      - src/constant/__init__.py
+      - data/processed/train.csv
+      - data/processed/val.csv
+    params:
+      - model
+    outs:
+      - models/classifier.pkl
+    
+  evaluate_model:
+    cmd: python -m src.pipeline.model.eval
+    deps:
+      - src/pipeline/model/eval.py
+      - src/constant/__init__.py
+      - data/processed/test.csv
+      - models/classifier.pkl
+      - models/target_encoder.pkl
+    params:
+      - eval
+    outs:
+      - reports/

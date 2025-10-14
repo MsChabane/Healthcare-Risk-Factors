@@ -1,0 +1,26 @@
+  
+preprocessing:
+  normalization: True
+  scaling: minmax
+  split:
+    test_size: 0.2
+    random_state: 42
+model:
+  params: {
+    "n_estimators": 1000,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "random_state": 42,
+    "use_label_encoder": false,
+    "eval_metric": "mlogloss",
+    "early_stopping_rounds": 10,
+    "class_weight": "balanced"
+  }
+
+eval:
+    mlflow_experiment_name: XGBClassifier_Experiment
+  
+
+
